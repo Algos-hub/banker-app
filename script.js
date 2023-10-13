@@ -62,18 +62,6 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ["USD", "United States dollar"], // WHAT THE FUCK IS A KILOMETER RAAAAHHHHHHHHHHHHHHHHHHH 🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🦅🦅🦅🦅🦅
-  ["EUR", "Euro"], // WHAT THE FUCK IS A MILE RAAAAHHHHHHHHHHHHHHHHHHH 🇪🇺🇪🇺🇪🇺🇪🇺🇪🇺🥐🥐🥐🥐🥐
-  ["GBP", "Pound sterling"], // WHAT THE FUCK IS A MILE RAAAAHHHHHHHHHHHHHHHHHHH 🍵🍵🍵🍵🍵🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
 
 function displayMovements(currAcc, sort = false) {
   containerMovements.innerHTML = "";
@@ -106,58 +94,11 @@ function createUsernames(accs) {
 
 createUsernames(accounts);
 
-const deposits = movements.filter(function (mov) {
-  return mov > 0;
-});
-
-const depositsFor = [];
-for (const mov of movements) {
-  if (mov > 0) {
-    depositsFor.push(mov);
-  }
-}
-
-const withdrawals = movements.filter(function (mov) {
-  return mov < 0;
-});
-
-const withdrawalsFor = [];
-for (const mov of movements) {
-  if (mov < 0) {
-    withdrawalsFor.push(mov);
-  }
-}
-
-const balance = movements.reduce(function (acc, cur, i) {
-  return acc + cur;
-}, 0);
-
-console.log(balance);
-
-let balance2 = 0;
-for (const mov of movements) {
-  balance2 += mov;
-}
-
-console.log(balance2);
-
-const max = movements.reduce((acc, mov) => {
-  if (acc > mov) return acc;
-  else return mov;
-}, movements[0]);
-console.log("max", max);
-
 function calcDisplayBalance(currAcc) {
   currAcc.balance = currAcc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${currAcc.balance} EUR WHAT THE FUCK IS A MILE RAAAAHHHHHHHHHHHHHHHHHHH 🇪🇺🇪🇺🇪🇺🇪🇺🇪🇺🥐🥐🥐🥐🥐`;
+  labelBalance.textContent = `${currAcc.balance} EUR`;
 }
 calcDisplayBalance(account1);
-
-let eurToUsd = 1.06;
-const totalDepositUSD = movements
-  .filter((mov) => mov > 0)
-  .map((mov) => mov * eurToUsd)
-  .reduce((acc, mov) => acc + mov, 0);
 
 function calcDisplaySummary(currAcc) {
   const income = currAcc.movements
@@ -172,7 +113,6 @@ function calcDisplaySummary(currAcc) {
 
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  // What the fuck is this Jesus Chirst, ain't no fucking way this is the best way of coding this
   const interest = currAcc.movements
     .filter((mov) => mov > 0)
     .map((deposit) => (deposit * currAcc.interestRate) / 100)
@@ -184,9 +124,11 @@ function calcDisplaySummary(currAcc) {
 }
 calcDisplaySummary(account1);
 
-const firstWithdrawal = movements.find((mov) => mov < 0);
-
-const account = accounts.find((acc) => acc.owner === "Jessica Davis");
+function updateUI(acc) {
+  displayMovements(acc);
+  calcDisplayBalance(acc);
+  calcDisplaySummary(acc);
+}
 
 let currentAccount;
 btnLogin.addEventListener("click", (e) => {
@@ -229,14 +171,6 @@ btnTransfer.addEventListener("click", function (e) {
   inputTransferAmount.value = inputTransferTo.value = "";
 });
 
-function updateUI(acc) {
-  displayMovements(acc);
-  calcDisplayBalance(acc);
-  calcDisplaySummary(acc);
-}
-
-const index = movements.findIndex((mov) => mov === -130);
-
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
   const user = inputCloseUsername.value;
@@ -253,11 +187,6 @@ btnClose.addEventListener("click", function (e) {
   inputCloseUsername.value = inputClosePin.value = "";
 });
 
-console.log(movements);
-console.log(movements.includes(-130));
-console.log(movements.some((mov) => mov === -130));
-console.log(movements.every((mov) => mov > 0));
-
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
   const requestedAmount = Math.floor(inputLoanAmount.value);
@@ -272,38 +201,6 @@ btnLoan.addEventListener("click", function (e) {
   }
   inputLoanAmount.value = "";
 });
-
-const array = [[1, 2, 3], [4, 5, 6], 7, 8];
-console.log(array.flat());
-
-const arrayDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
-console.log(arrayDeep.flat(2));
-
-const overallBalance = accounts
-  .map((acc) => acc.movements)
-  .flat()
-  .reduce((acc, mov) => acc + mov, 0);
-console.log(overallBalance);
-
-const overallBalance2 = accounts
-  .flatMap((acc) => acc.movements)
-  .reduce((acc, mov) => acc + mov, 0);
-console.log(overallBalance2);
-
-const owners = ["Hedi", "Zied", "Rami", "Amine"];
-console.log(owners);
-console.log(owners.sort());
-
-console.log(movements);
-console.log(movements.sort());
-
-// Ascending
-movements.sort((a, b) => a - b);
-console.log(movements);
-
-// Descending
-movements.sort((a, b) => b - a);
-console.log(movements);
 
 let sorted = false;
 btnSort.addEventListener("click", function (e) {
