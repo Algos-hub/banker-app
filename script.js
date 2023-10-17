@@ -117,7 +117,7 @@ function displayMovements(currAcc, sort = false) {
 
     const date = new Date(currAcc.movementsDates[i]);
 
-    const displaydate = formattedMovementDate(date, currAcc.locale);
+    const displaydate = formattedMovementDate(date);
 
     const html = `<div class="movements__row">
     <div class="movements__type movements__type--${type}">
@@ -145,7 +145,11 @@ createUsernames(accounts);
 
 function calcDisplayBalance(currAcc) {
   currAcc.balance = currAcc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${currAcc.balance} EUR`;
+  labelBalance.textContent = formatCurr(
+    currAcc.balance,
+    currAcc.locale,
+    currAcc.currency
+  );
 }
 calcDisplayBalance(account1);
 
@@ -154,13 +158,17 @@ function calcDisplaySummary(currAcc) {
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
 
-  labelSumIn.textContent = `${income.toFixed(2)}€`;
+  labelSumIn.textContent = formatCurr(income, currAcc.locale, currAcc.currency);
 
   const out = currAcc.movements
     .filter((mov) => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
 
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumOut.textContent = formatCurr(
+    Math.abs(out),
+    currAcc.locale,
+    currAcc.currency
+  );
 
   const interest = currAcc.movements
     .filter((mov) => mov > 0)
@@ -169,7 +177,11 @@ function calcDisplaySummary(currAcc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCurr(
+    interest,
+    currAcc.locale,
+    currAcc.currency
+  );
 }
 calcDisplaySummary(account1);
 
