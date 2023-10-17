@@ -138,13 +138,15 @@ function displayMovements(currAcc, sort = false) {
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
-    const date = new Date(currAcc.movementsDates[i]);
+    const date = new Date(
+      currAcc.movementsDates[currAcc.movements.indexOf(mov)]
+    );
 
     const displaydate = formattedMovementDate(date);
 
     const html = `<div class="movements__row">
     <div class="movements__type movements__type--${type}">
-    ${i + 1} ${type}</div>
+    ${currAcc.movements.indexOf(mov) + 1} ${type}</div>
     <div class="movements__date">${displaydate}</div>
     <div class="movements__value">${mov.toFixed(2)}€</div>
     </div>`;
