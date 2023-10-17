@@ -106,6 +106,9 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 /////////////////////////////////////////////////
 
+var tick;
+var timer;
+
 function displayMovements(currAcc, sort = false) {
   containerMovements.innerHTML = "";
   const movs = sort
@@ -195,7 +198,6 @@ function formattedMovementDate(date, locale) {
   const calcDatePassed = (date1, date2) =>
     Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
   const daysPassed = Math.round(calcDatePassed(new Date(), date));
-  console.log(daysPassed);
 
   if (daysPassed < 1) return "Today";
   if (daysPassed === 1) return "Yesterday";
@@ -242,6 +244,8 @@ btnLogin.addEventListener("click", (e) => {
   }
   inputLoginUsername.value = inputLoginPin.value = "";
   inputLoginPin.blur();
+  timer = clearInterval(timer);
+  startLogOutTimer();
 });
 
 btnTransfer.addEventListener("click", function (e) {
@@ -290,12 +294,12 @@ btnLoan.addEventListener("click", function (e) {
   const loanAmount = currentAccount.movements.some(
     (mov) => mov >= requestedAmount * 0.1
   );
-  console.log(requestedAmount);
-  console.log(loanAmount);
   if (requestedAmount > 0 && loanAmount) {
-    currentAccount.movements.push(requestedAmount);
-    currentAccount.movementsDates.push(new Date().toISOString());
-    updateUI(currentAccount);
+    setTimeout(function () {
+      currentAccount.movements.push(requestedAmount);
+      currentAccount.movementsDates.push(new Date().toISOString());
+      updateUI(currentAccount);
+    }, 3000);
   }
   inputLoanAmount.value = "";
 });
@@ -305,3 +309,23 @@ btnSort.addEventListener("click", function (e) {
   displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
+
+const startLogOutTimer = function () {
+  let time = 300;
+  tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = "Log in to get started";
+    }
+    time--;
+  };
+  tick();
+  timer = setInterval(tick, 1000);
+  return timer;
+};
