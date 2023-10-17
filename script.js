@@ -109,6 +109,26 @@ const inputClosePin = document.querySelector(".form__input--pin");
 var tick;
 var timer;
 
+const startLogOutTimer = function () {
+  let time = 300;
+  tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = "Log in to get started";
+    }
+    time--;
+  };
+  tick();
+  timer = setInterval(tick, 1000);
+  return timer;
+};
+
 function displayMovements(currAcc, sort = false) {
   containerMovements.innerHTML = "";
   const movs = sort
@@ -309,23 +329,3 @@ btnSort.addEventListener("click", function (e) {
   displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
-
-const startLogOutTimer = function () {
-  let time = 300;
-  tick = function () {
-    const min = String(Math.trunc(time / 60)).padStart(2, 0);
-    const sec = String(time % 60).padStart(2, 0);
-
-    labelTimer.textContent = `${min}:${sec}`;
-
-    if (time === 0) {
-      clearInterval(timer);
-      containerApp.style.opacity = 0;
-      labelWelcome.textContent = "Log in to get started";
-    }
-    time--;
-  };
-  tick();
-  timer = setInterval(tick, 1000);
-  return timer;
-};
